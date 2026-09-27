@@ -1,11 +1,34 @@
 # HBM Fault-Injection Supplementary Experiments
 
-This repository combines reproducible HBM 1→0 asymmetric bit-flip fault-injection experiments for Qwen3-8B and Llama-3-8B-Instruct. The repository is organized into two independent sections: qwen/ and llama/. Each section contains the corresponding experiment code, evaluation notebooks or scripts, configuration notes, and summarized results.
+This repository combines reproducible HBM 1→0 asymmetric bit-flip fault-injection experiments for Qwen3-8B and Llama-3-8B-Instruct. The repository is organized into two independent model sections: [qwen/](qwen/) and [llama/](llama/).
 
 ## Repository structure
 
-- qwen/: Qwen3-8B FP16, Quanto INT8, BER=0.003 baseline, SpECC INT8, and SRLR experiments.
-- llama/: Llama-3-8B-Instruct FP16 and Quanto INT8 experiments, including SpECC and SRLR evaluation code, notebooks, documentation, and summary results.
+```text
+.
+├── README.md
+├── qwen/
+│   ├── fp16-clean/
+│   ├── int8-clean/
+│   ├── int8-ber003/
+│   ├── specc/
+│   ├── srlr/
+│   └── package_manifest.json
+└── llama/
+```
+
+### Qwen3-8B
+
+- [FP16 clean](qwen/fp16-clean/)
+- [INT8 clean](qwen/int8-clean/)
+- [INT8 BER=0.003](qwen/int8-ber003/)
+- [SpECC INT8](qwen/specc/)
+- [SRLR INT8](qwen/srlr/)
+- [Qwen package manifest](qwen/package_manifest.json)
+
+### Llama-3-8B-Instruct
+
+See [llama/](llama/) for the existing FP16 and Quanto INT8 experiment code, notebooks, documentation, and summary results.
 
 The fault model selects eligible bits whose original value is 1 and flips approximately 0.3% of them to 0. Each experiment records its model configuration, protected or injected weight scope, random seed, GPU, actual changed-bit count, BER, and benchmark accuracy. Large model files, raw masks, caches, and full runtime logs are intentionally excluded.
 
@@ -39,4 +62,4 @@ The fault model selects eligible bits whose original value is 1 and flips approx
 
 ## Reproducibility
 
-See the qwen/ and llama/ subdirectories for the exact scripts, notebooks, configuration files, experiment descriptions, and selected result summaries. Do not commit model weights, raw masks, caches, or full logs.
+See the [qwen/](qwen/) and [llama/](llama/) subdirectories for the exact scripts, notebooks, configuration files, experiment descriptions, and selected result summaries. Do not commit model weights, raw masks, caches, or full logs.
