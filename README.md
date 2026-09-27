@@ -1,29 +1,42 @@
-# Qwen3-8B HBM Supplementary Experiments
+# HBM Fault-Injection Supplementary Experiments
 
-This repository organizes five selected Qwen3-8B experiment groups and their benchmark results: an FP16 reference, clean and fault-injected INT8 baselines, an INT8 adaptation of SPECC (Sparrow ECC), and SRLR.
-
-## Selected results
-
-Accuracy values from the selected result table:
-
-| Experiment | MathQA | MMLU | HumanEval |
-|---|---:|---:|---:|
-| `fp16-clean` | 84.90% | 72.30% | 82.32% |
-| `int8-clean` | 84.90% | 72.20% | 83.54% |
-| `int8-ber003` | 24.41% | 43.99% | 37.81% |
-| `specc` | 84.39% | 72.36% | 82.87% |
-| `srlr` | 80.40% | 71.13% | 78.17% |
+This repository combines reproducible HBM 1→0 asymmetric bit-flip fault-injection experiments for Qwen3-8B and Llama-3-8B-Instruct. The repository is organized into two independent sections: qwen/ and llama/. Each section contains the corresponding experiment code, evaluation notebooks or scripts, configuration notes, and summarized results.
 
 ## Repository structure
 
-- `fp16-clean/`: FP16 reference experiment.
-- `int8-clean/`: clean INT8 baseline.
-- `int8-ber003/`: unprotected INT8 baseline with BER 0.003 fault injection.
-- `specc/`: SPECC (Sparrow ECC), adapted for this INT8 experiment. Each high nibble is encoded with Hamming(7,4); encoded high-nibble bits are excluded from fault injection. BER 0.003 one-to-zero faults are injected only into eligible raw low-nibble bits. Since high-nibble codeword bits are not faulted, this run does not measure ECC recovery from high-nibble errors.
-- `srlr/`: SRLR experiment, including the MathQA replay worker and configuration used for the three-benchmark result set.
+- qwen/: Qwen3-8B FP16, Quanto INT8, BER=0.003 baseline, SpECC INT8, and SRLR experiments.
+- llama/: Llama-3-8B-Instruct FP16 and Quanto INT8 experiments, including SpECC and SRLR evaluation code, notebooks, documentation, and summary results.
 
-## Experiment configuration
+The fault model selects eligible bits whose original value is 1 and flips approximately 0.3% of them to 0. Each experiment records its model configuration, protected or injected weight scope, random seed, GPU, actual changed-bit count, BER, and benchmark accuracy. Large model files, raw masks, caches, and full runtime logs are intentionally excluded.
 
-The INT8 experiments use symmetric W8A16 RTN quantization with group size 128 and BF16 compute. Protection and fault injection cover the 252 non-`lm_head` linear weight matrices specified in the experiment configurations; embeddings, `lm_head`, scales, and biases are excluded.
+## Accuracy summary
 
-For the SPECC INT8 adaptation, eligible raw low-nibble bits use a one-to-zero fault model at BER 0.003. Hamming(7,4)-encoded high-nibble bits are excluded from injection. SRLR uses the BER and payload definition recorded in its own configuration.
+### Qwen3-8B
+
+| Experiment | MathQA | MMLU | HumanEval |
+|---|---:|---:|---:|
+| FP16 clean | 84.90% | 72.30% | 82.32% |
+| INT8 clean | 84.90% | 72.20% | 83.54% |
+| INT8 BER=0.003 | 24.41% | 43.99% | 37.81% |
+| SpECC INT8 | 84.39% | 72.36% | 82.87% |
+| SRLR INT8 | 80.40% | 71.13% | 78.17% |
+
+### Llama-3-8B-Instruct
+
+| Experiment | MathQA | MMLU | HumanEval |
+|---|---:|---:|---:|
+| FP16 clean | 48.80% | 48.80% | 60.98% |
+| INT8 clean | 48.40% | 65.60% | 65.60% |
+| INT8 BER=0.003 | 5.80% | 26.46% | 1.34% |
+| SpECC INT8 | 46.49% | 64.82% | 56.83% |
+| SRLR INT8 | 36.04% | 59.34% | 43.66% |
+
+## Benchmarks
+
+- MMLU: general knowledge and reasoning.
+- MathQA: mathematical problem solving.
+- HumanEval: code generation.
+
+## Reproducibility
+
+See the qwen/ and llama/ subdirectories for the exact scripts, notebooks, configuration files, experiment descriptions, and selected result summaries. Do not commit model weights, raw masks, caches, or full logs.
